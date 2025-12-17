@@ -1,7 +1,0 @@
-  <div
-    [ngClass]="{'interactable': !disabled, 'hide': disabled && !isSelected, 'point': true}"
-    (mousedown)="selectToggle()"
-    (mouseenter)="hoverIn()"
-    (mouseleave)="hoverOut()"
-    [@selector]="isSelected ? (isHovered ? 'hoverednselected' : 'selected') : (isHovered ? 'hoverednunselected' : 'unselected')">
-  </div>

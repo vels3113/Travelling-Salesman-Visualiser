@@ -1,8 +1,0 @@
-<div
-  [ngClass]="{'type0': type === 0, 'type1': type === 1, 'type2': type === 2, 'path': true}"
-
-  [ngStyle]="{'width.px': pathWidth, 'height.px': pathHeight, 'transform': 'translate('+pathLeft+'px,'+pathTop+'px) rotate('+rotation+'deg) translate(0,-3px)' }"
-  >
-</div>
-
-<!-- The final translate(0,-3px) fixes the offset caused by border width and rotation centered around the inner box -->
