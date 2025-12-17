@@ -10,6 +10,10 @@
   border-top: 6px solid rgba(241, 243, 104);
 }
 
+.type3 {
+  border-top: 6px solid rgba(255, 0, 0);
+}
+
 
 .path {
   position: absolute;

@@ -79,7 +79,8 @@ export class TopbarComponent implements OnInit, DoCheck {
         {value: "nearest-insertion", viewValue: "Nearest Insertion"},
         {value: "farthest-insertion", viewValue: "Farthest Insertion"},
         {value: "arbitrary-insertion", viewValue: "Arbitrary Insertion"},
-        {value: "convex-hull", viewValue: "Convex Hull"}
+        {value: "convex-hull", viewValue: "Convex Hull"},
+        {value: "simulated-annealing", viewValue: "Simulated Annealing"}
       ]
     }
   ]
@@ -277,6 +278,10 @@ export class TopbarComponent implements OnInit, DoCheck {
 
       case "convex-hull":
         await this.convexHull()
+        break
+
+      case "simulated-annealing":
+        await this.simulatedAnnealing()
         break
     }
 
@@ -1172,6 +1177,194 @@ export class TopbarComponent implements OnInit, DoCheck {
     this.currentPathDistance = Math.round((totalDist + Number.EPSILON) * 100) / 100;
     this.minPathDistance = this.currentPathDistance;
   }
+
+  // Simulated Annealing
+  async simulatedAnnealing():Promise<void> {
+    console.log("Starting Simulated Annealing!")
+
+    // Declare variables for the iteration
+    let prevDistance:number = 0;            // Minimum distance between points
+    let currentDistance:number;        // Current comparison distance
+    let temperature:number = 10;     // Starting temperature
+    let coolingRate:number = 0.995;    // Cooling rate
+
+    this.minPathDistance = Infinity;
+
+    // Generate random starting path
+    this.shuffleSelectedPoints();
+    for (let i=0; i<this.selectedPoints.length-1; i++) {
+      if (this.data.currPaths.length != 0) {
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+      }
+      prevDistance += this.distanceBetweenPoints(this.selectedPoints[i], this.selectedPoints[i+1])
+      this.createPath({A:this.selectedPoints[i],
+                       B:this.selectedPoints[i+1]});
+      // Listens constantly for the reset button click, and aborts the function if it occurs
+      if (this.abort) {
+        this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+        return
+      };
+      await this.sleep(this.runSpeed);  // Making use of async-await
+    }
+    this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+    prevDistance += this.distanceBetweenPoints(this.selectedPoints[this.selectedPoints.length-1], this.selectedPoints[0])
+    this.createPath({A:this.selectedPoints[this.selectedPoints.length-1],
+                     B:this.selectedPoints[0]});
+    // Listens constantly for the reset button click, and aborts the function if it occurs
+    if (this.abort) {
+      this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+      return
+    };
+    await this.sleep(this.runSpeed);  // Making use of async-await
+    this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 0)
+    this.currentPathDistance = Math.round((prevDistance + Number.EPSILON) * 100) / 100;
+    this.minPathDistance = this.currentPathDistance;
+    await this.sleep(this.runSpeed);  // Making use of async-await
+
+    if (this.selectedPoints.length <= 3) {
+      return;  // No point in running simulated annealing on 3 or fewer points
+    }
+    // Algorithm main loop
+    while (temperature > 1) {
+      // Create new path by swapping two random points
+      let newPath = this.selectedPoints.slice();  // Deep copy of selected points
+      let pointAIndex = Math.floor(Math.random() * this.selectedPoints.length);
+      let pointBIndex = Math.floor(Math.random() * this.selectedPoints.length);
+      if (pointAIndex === pointBIndex) {
+        continue;  // Skip iteration if same point selected
+      }
+
+      // Save edges that are edited
+      let edgesManipulated = [];
+      edgesManipulated.push({A:((pointAIndex === 0)? newPath.length - 1: pointAIndex - 1),
+                     B:pointAIndex});
+      edgesManipulated.push({A:pointAIndex,
+                     B:(pointAIndex === newPath.length - 1)? 0: pointAIndex + 1});
+      if ((pointBIndex === newPath.length)? (pointAIndex !== 0): (pointAIndex !== pointBIndex - 1)) {
+        edgesManipulated.push({A:(pointBIndex === 0)? newPath.length - 1: pointBIndex - 1,
+                       B:pointBIndex});
+      }
+      if ((pointBIndex === 0)? (pointAIndex !== newPath.length - 1): (pointAIndex !== pointBIndex + 1)) {
+        edgesManipulated.push({A:pointBIndex,
+                       B:(pointBIndex === newPath.length - 1)? 0: pointBIndex + 1});
+      }
+
+      // Color old edges
+      for (let i=0; i<edgesManipulated.length; i++) {
+        this.data.setIndividualPathType({A:newPath[edgesManipulated[i].A],
+                                         B:newPath[edgesManipulated[i].B]}, 2);
+        // Listens constantly for the reset button click, and aborts the function if it occurs
+        if (this.abort) {
+          this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+          return
+        };
+        await this.sleep(this.runSpeed);  // Making use of async-await
+      }
+      // Swap the two points
+      let tempPoint = newPath[pointAIndex];
+      newPath[pointAIndex] = newPath[pointBIndex];
+      newPath[pointBIndex] = tempPoint;
+
+      // Add new edges
+      for (let i=0; i<edgesManipulated.length; i++) {
+        this.createPath({A:newPath[edgesManipulated[i].A],
+                         B:newPath[edgesManipulated[i].B]});
+        // Listens constantly for the reset button click, and aborts the function if it occurs
+        if (this.abort) {
+          this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+          return
+        };
+        await this.sleep(this.runSpeed);  // Making use of async-await
+        this.data.setIndividualPathType(this.data.currPaths[this.data.currPaths.length-1], 3)
+      }
+
+      // Calculate distance of new path
+      currentDistance = 0;
+      for (let i=0; i<newPath.length-1; i++) {
+        currentDistance += this.distanceBetweenPoints(newPath[i], newPath[i+1])
+      }
+      currentDistance += this.distanceBetweenPoints(newPath[newPath.length-1], newPath[0])
+      this.currentPathDistance = Math.round((currentDistance + Number.EPSILON) * 100) / 100;
+      if (currentDistance < this.minPathDistance) {
+        this.minPathDistance = this.currentPathDistance;
+      }
+
+      // Decide whether to accept the new path
+      if (currentDistance < prevDistance) {
+        for (let i=0; i<edgesManipulated.length; i++) {
+          // Remove the paths connected to the two points being swapped
+          this.removePath({A:this.selectedPoints[edgesManipulated[i].A],
+                           B:this.selectedPoints[edgesManipulated[i].B]});
+          // Listens constantly for the reset button click, and aborts the function if it occurs
+          if (this.abort) {
+            this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+            return
+          };
+          await this.sleep(this.runSpeed);  // Making use of async-await
+        }
+        this.selectedPoints = newPath;  // Accept the new path
+        prevDistance = currentDistance;
+        for (let i=0; i<edgesManipulated.length; i++) {
+          this.data.setIndividualPathType({A:newPath[edgesManipulated[i].A],
+                                           B:newPath[edgesManipulated[i].B]}, 0);
+        }
+      }
+      else {
+        let acceptanceProbability = Math.exp((prevDistance - currentDistance) / temperature);
+        if (Math.random() < acceptanceProbability) {
+          for (let i=0; i<edgesManipulated.length; i++) {
+            // Remove the paths connected to the two points being swapped
+            this.removePath({A:this.selectedPoints[edgesManipulated[i].A],
+                             B:this.selectedPoints[edgesManipulated[i].B]});
+            // Listens constantly for the reset button click, and aborts the function if it occurs
+            if (this.abort) {
+              this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+              return
+            };
+            await this.sleep(this.runSpeed);  // Making use of async-await
+          }
+          this.selectedPoints = newPath;  // Accept the new path
+          prevDistance = currentDistance;
+          for (let i=0; i<edgesManipulated.length; i++) {
+            this.data.setIndividualPathType({A:newPath[edgesManipulated[i].A],
+                                             B:newPath[edgesManipulated[i].B]}, 0);
+          }
+        } else {
+          // Revert the changes by removing new edges and adding back old edges
+          for (let i=0; i<edgesManipulated.length; i++) {
+            // Remove the paths connected to the two points being swapped
+            this.removePath({A:newPath[edgesManipulated[i].A],
+                             B:newPath[edgesManipulated[i].B]});
+            // Listens constantly for the reset button click, and aborts the function if it occurs
+            if (this.abort) {
+              this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+              return
+            };
+            await this.sleep(this.runSpeed);  // Making use of async-await
+          }
+
+          for (let i=0; i<edgesManipulated.length; i++) {
+          this.data.setIndividualPathType({A:this.selectedPoints[edgesManipulated[i].A],
+                                           B:this.selectedPoints[edgesManipulated[i].B]}, 0);
+          }
+        }
+      }
+      this.currentPathDistance = Math.round((prevDistance + Number.EPSILON) * 100) / 100;
+
+      // Cool down the temperature
+      temperature *= coolingRate;
+
+      // Listens constantly for the reset button click, and aborts the function if it occurs
+      if (this.abort) {
+        this.removeAllPaths();  // Repeated removeAllPaths in case of asynchronous call
+        return
+      };
+      await this.sleep(this.runSpeed);  // Making use of async-await
+    }  // End of main algorithm loop
+    // Set current distance
+    this.currentPathDistance = Math.round((prevDistance + Number.EPSILON) * 100) / 100;
+    this.minPathDistance = this.currentPathDistance;
+  }  // End of simulated annealing algorithm
 
   //------------------------------------------------------------------------------------------------------------------
   // General algorithm helpers
