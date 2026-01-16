@@ -89,6 +89,10 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Speed Control
   runSpeed:number = 10000 / 505;
 
+  // Run history (records completed algorithm runs)
+  runId:number = 1;
+  runHistory: {id:number, algorithm:string, timeElapsed:number, minDistance:number}[] = [];
+
   // Simulated Annealing option: cooling rate between 0 and 1
   coolingRate:number = 0.995;
 
@@ -165,6 +169,9 @@ export class TopbarComponent implements OnInit, DoCheck {
   clearAll(): void{
     this.data.changeSelPointMessage([]);  // Empties the selectedpoints 'message'; More info: gridcomm.service.ts
     this.removeAllPaths();                // Removing all paths
+    // Reset run history when points change
+    this.runHistory = [];
+    this.runId = 1;
   }
 
   // Helper function to generate random number
@@ -315,6 +322,13 @@ export class TopbarComponent implements OnInit, DoCheck {
       // Set all lines to opaque
       this.startText = "Finished!"             // Display that the algorithm has finished
       this.algorithmFinished();
+      // Record completed run in history
+      this.runHistory.push({
+        id: this.runId++,
+        algorithm: this.selectedAlgorithm,
+        timeElapsed: this.counterSeconds,
+        minDistance: this.minPathDistance
+      });
     } else {
       this.abort = false;                      // Setting abort back to false if aborted
     }
@@ -1422,6 +1436,13 @@ export class TopbarComponent implements OnInit, DoCheck {
   resetTimer(): void {
     if (this.timerRunning) {
       this.abort = true;                              // Functions listen to "abort"
+      // Record completed run in history
+      this.runHistory.push({
+        id: this.runId++,
+        algorithm: this.selectedAlgorithm,
+        timeElapsed: this.counterSeconds,
+        minDistance: this.minPathDistance
+      });                            // Functions listen to "abort"
     }
 
     this.verticesButtonsDisabled = false;             // Re-enable vertices buttons
