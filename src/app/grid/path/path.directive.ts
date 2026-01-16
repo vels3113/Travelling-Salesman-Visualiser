@@ -1,7 +1,8 @@
 import { Directive, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  selector: '[app-pathhost]',
+    selector: '[app-pathhost]',
+    standalone: false
 })
 export class PathDirective {
   // Acts as a container for the paths - use in html as <ng-template app-pathhost></ng-template>

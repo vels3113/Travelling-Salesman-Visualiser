@@ -1,5 +1,5 @@
 import { Component, OnInit, DoCheck, ViewEncapsulation } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { UntypedFormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GridcommService } from '../gridcomm.service';
 import { MatDialog } from '@angular/material/dialog'
 import { DialogInfoComponent } from './dialog-info/dialog-info.component';
@@ -18,9 +18,10 @@ interface AlgorithmGroup {
 }
 
 @Component({
-  selector: 'app-topbar',
-  templateUrl: './topbar.component.html',
-  styleUrls: ['./topbar.component.css']
+    selector: 'app-topbar',
+    templateUrl: './topbar.component.html',
+    styleUrls: ['./topbar.component.css'],
+    standalone: false
 })
 
 export class TopbarComponent implements OnInit, DoCheck {
@@ -62,7 +63,7 @@ export class TopbarComponent implements OnInit, DoCheck {
   distanceMatrix:number[][] = [];         // Matrix of distances between points
 
   // Algorithm Select
-  algorithmControl =  new FormControl();  // Initialise form control for algorithm selector
+  algorithmControl =  new UntypedFormControl();  // Initialise form control for algorithm selector
   algorithmsMenu: AlgorithmGroup[] = [
     {
       name: "Brute Force Algorithms",

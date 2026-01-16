@@ -3,9 +3,10 @@ import { PointComponent } from '../point/point.component';
 import { PointDirective } from '../point/point.directive';
 
 @Component({
-  selector: 'app-pointrow',
-  templateUrl: './pointrow.component.html',
-  styleUrls: ['./pointrow.component.css']
+    selector: 'app-pointrow',
+    templateUrl: './pointrow.component.html',
+    styleUrls: ['./pointrow.component.css'],
+    standalone: false
 })
 
 export class PointrowComponent implements OnInit {

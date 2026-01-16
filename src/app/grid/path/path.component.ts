@@ -2,9 +2,10 @@ import { Component, OnInit, DoCheck } from '@angular/core';
 import { GridcommService } from '../../gridcomm.service';
 
 @Component({
-  selector: 'app-path',
-  templateUrl: './path.component.html',
-  styleUrls: ['./path.component.css'],
+    selector: 'app-path',
+    templateUrl: './path.component.html',
+    styleUrls: ['./path.component.css'],
+    standalone: false
 })
 
 export class PathComponent implements OnInit, DoCheck {

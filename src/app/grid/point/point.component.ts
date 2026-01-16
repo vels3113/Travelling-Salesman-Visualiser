@@ -3,50 +3,43 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 import { GridcommService } from '../../gridcomm.service';
 
 @Component({
-  selector: 'app-point',
-  animations: [  // Animation states - states are selected from the html tag (check point.component.html)
-    trigger("selector", [
-      state(
-        "hoverednunselected",  // When mouse is hovered over and point is unselected
-        style({
-          backgroundColor: "black",
-          opacity: '15%',
-          width: '50%',
-          height: '50%'
-        })
-      ),
-      state(
-        "unselected",  // When mouse is NOT hovered over and point is unselected
-        style({
-          backgroundColor: "black",
-          opacity: '15%',
-          width: '35%',
-          height: '35%'
-        })
-      ),
-      state(
-        "hoverednselected",  // When mouse is hovered over and point is selected
-        style({
-          backgroundColor: "black",
-          opacity: '100%',
-          width: '55%',
-          height: '55%'
-        })
-      ),
-      state(
-        "selected",  // When mouse is NOT hovered over and point is selected
-        style({
-          backgroundColor: "black",
-          opacity: '100%',
-          width: '40%',
-          height: '40%'
-        })
-      ),
-      transition("* => *", [animate("0.05s")])  // Transition time from ANY state to ANY state
-    ])
-  ],
-  templateUrl: './point.component.html',
-  styleUrls: ['./point.component.css']
+    selector: 'app-point',
+    animations: [
+        trigger("selector", [
+            state("hoverednunselected", // When mouse is hovered over and point is unselected
+            style({
+                backgroundColor: "black",
+                opacity: '15%',
+                width: '50%',
+                height: '50%'
+            })),
+            state("unselected", // When mouse is NOT hovered over and point is unselected
+            style({
+                backgroundColor: "black",
+                opacity: '15%',
+                width: '35%',
+                height: '35%'
+            })),
+            state("hoverednselected", // When mouse is hovered over and point is selected
+            style({
+                backgroundColor: "black",
+                opacity: '100%',
+                width: '55%',
+                height: '55%'
+            })),
+            state("selected", // When mouse is NOT hovered over and point is selected
+            style({
+                backgroundColor: "black",
+                opacity: '100%',
+                width: '40%',
+                height: '40%'
+            })),
+            transition("* => *", [animate("0.05s")]) // Transition time from ANY state to ANY state
+        ])
+    ],
+    templateUrl: './point.component.html',
+    styleUrls: ['./point.component.css'],
+    standalone: false
 })
 
 export class PointComponent implements OnInit, AfterContentInit, DoCheck {

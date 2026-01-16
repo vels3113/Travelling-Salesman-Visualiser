@@ -1,7 +1,8 @@
 import { Directive, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  selector: '[app-pointhost]',
+    selector: '[app-pointhost]',
+    standalone: false
 })
 export class PointDirective {
   // Acts as a container for the pointrows - use in html as <ng-template app-pointhost></ng-template>

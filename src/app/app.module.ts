@@ -20,43 +20,40 @@ import { PointrowDirective } from './grid/pointrow/pointrow.directive';
 import { PointDirective } from './grid/point/point.directive';
 import { PathComponent } from './grid/path/path.component';
 import { PathDirective } from './grid/path/path.directive';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DialogInfoComponent } from './topbar/dialog-info/dialog-info.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    TopbarComponent,
-    GridComponent,
-    PointComponent,
-    PointrowComponent,
-    PointrowDirective,
-    PointDirective,
-    PathComponent,
-    PathDirective,
-    DialogInfoComponent
-  ],
-  entryComponents: [DialogInfoComponent],
-  imports: [
-    BrowserModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatRippleModule,
-    MatSelectModule,
-    BrowserAnimationsModule,
-    MatIconModule,
-    MatSliderModule,
-    MatButtonModule,
-    MatButtonToggleModule,
-    BrowserAnimationsModule,
-    NgbModule,
-    MatDialogModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatSnackBarModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        TopbarComponent,
+        GridComponent,
+        PointComponent,
+        PointrowComponent,
+        PointrowDirective,
+        PointDirective,
+        PathComponent,
+        PathDirective,
+        DialogInfoComponent
+    ],
+    imports: [
+        BrowserModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatRippleModule,
+        MatSelectModule,
+        BrowserAnimationsModule,
+        MatIconModule,
+        MatSliderModule,
+        MatButtonModule,
+        MatButtonToggleModule,
+        BrowserAnimationsModule,
+        MatDialogModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatSnackBarModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
