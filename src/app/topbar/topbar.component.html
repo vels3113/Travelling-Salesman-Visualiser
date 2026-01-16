@@ -29,18 +29,18 @@
         }
       </mat-select>
     </mat-form-field>
-  </div>
 
-  <!-- Simulated Annealing options popout -->
-  @if (selectedAlgorithm === 'simulated-annealing') {
-    <div class="sa-options">
-      <mat-form-field appearance="outline" class="sa-field">
-        <mat-label>Cooling Rate (0 - 1)</mat-label>
-        <input matInput type="number" min="0" max="1" step="0.001" [(ngModel)]="coolingRate">
-        <mat-hint>Smaller =&gt; slower cooling (more exploration)</mat-hint>
-      </mat-form-field>
-    </div>
-  }
+    <!-- Simulated Annealing options popout -->
+    @if (selectedAlgorithm === 'simulated-annealing') {
+      <div class="sa-options">
+        <mat-form-field appearance="outline" class="sa-field">
+          <mat-label>Cooling Rate (0 - 1)</mat-label>
+          <input matInput type="number" min="0" max="1" step="0.001" [(ngModel)]="coolingRate">
+          <mat-hint>Greater rate -&gt; more paths explored</mat-hint>
+        </mat-form-field>
+      </div>
+    }
+  </div>
 
   <!-- Node randomiser and clearing -->
   <div class="node-control">

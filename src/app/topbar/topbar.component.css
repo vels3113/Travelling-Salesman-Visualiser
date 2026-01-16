@@ -272,11 +272,21 @@
 }
 
 .sa-options {
-  margin-top: 8px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 0;
+  padding: 0 8px;
+  margin-top: -8px;
 }
 
 .sa-field {
-  width: 220px;
+  width: 17vw;
+  min-width: 175px;
+}
+
+.sa-options .mat-mdc-form-field-hint {
+  font-size: 10px;
 }
 
 #playback-button-text {
