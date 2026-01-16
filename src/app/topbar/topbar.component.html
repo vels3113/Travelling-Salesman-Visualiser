@@ -27,6 +27,15 @@
     </mat-form-field>
   </div>
 
+    <!-- Simulated Annealing options popout -->
+    <div class="sa-options" *ngIf="selectedAlgorithm === 'simulated-annealing'">
+      <mat-form-field appearance="outline" class="sa-field">
+        <mat-label>Cooling Rate (0 - 1)</mat-label>
+        <input matInput type="number" min="0" max="1" step="0.001" [(ngModel)]="coolingRate">
+        <mat-hint>Smaller =&gt; slower cooling (more exploration)</mat-hint>
+      </mat-form-field>
+    </div>
+
   <!-- Node randomiser and clearing -->
   <div class="node-control">
     <h4 id="node-control-description"> <span> Initialise Vertices </span> </h4>
@@ -90,34 +99,62 @@
 
   <!-- Start/Pause and Reset Controls div -->
   <div class="playback-control">
-    <!-- Buttons -->
-    <div class="playback-buttons">
-      <button
-        mat-raised-button
-        id="start-button"
-        color={{startButtonColor}}
-        (mousedown)="startTimer()"
-        [disabled]="startButtonDisabled">
-        <span id="playback-button-text"> {{ startText }} </span>
-      </button>
-      <button mat-raised-button color="warn" id="reset-button" (mousedown)="resetTimer()">
-        <span id="playback-button-text"> Reset </span>
-      </button>
-    </div>
-    <!-- Slider controlling playback speed -->
-    <div class="playback-speed">
-      <mat-slider
-        id="playback-slider"
-        min="10"
-        max="100000"
-        value="505"
-        (input)="updateSpeed($event)">
-      </mat-slider>
-      <div class="speeds">
-        <h4 class="speed-text" id="slow"> Slow </h4>
-        <h4 class="speed-text" id="fast"> Fast </h4>
+    <div class="playback-left">
+      <!-- Buttons -->
+      <div class="playback-buttons">
+        <button
+          mat-raised-button
+          id="start-button"
+          color={{startButtonColor}}
+          (mousedown)="startTimer()"
+          [disabled]="startButtonDisabled">
+          <span id="playback-button-text"> {{ startText }} </span>
+        </button>
+        <button mat-raised-button color="warn" id="reset-button" (mousedown)="resetTimer()">
+          <span id="playback-button-text"> Reset </span>
+        </button>
+      </div>
+      <!-- Slider controlling playback speed -->
+      <div class="playback-speed">
+        <mat-slider
+          id="playback-slider"
+          min="10"
+          max="100000"
+          value="505"
+          (input)="updateSpeed($event)">
+        </mat-slider>
+        <div class="speeds">
+          <h4 class="speed-text" id="slow"> Slow </h4>
+          <h4 class="speed-text" id="fast"> Fast </h4>
+        </div>
       </div>
     </div>
-</div>
+
+    <!-- Run history placed to the right of controls -->
+    <div class="playback-right">
+      <div class="run-history">
+        <h4 id="run-history-title"> Run History </h4>
+        <table class="history-table" *ngIf="runHistory.length > 0">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Algorithm</th>
+              <th>Time Elapsed (s)</th>
+              <th>Min Distance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let r of runHistory">
+              <td>{{ r.id }}</td>
+              <td>{{ r.algorithm }}</td>
+              <td>{{ r.timeElapsed }}</td>
+              <td>{{ r.minDistance }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="runHistory.length === 0" class="no-runs"> <em>No completed runs</em> </div>
+      </div>
+    </div>
+  </div>
 
 
