@@ -1,0 +1,36 @@
+name: Build and deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Install dependencies
+        run: |
+          npm install --legacy-peer-deps
+
+      - name: Build (production)
+        run: |
+          npm run build -- --output-path=dist/travelling-salesman-visualiser --configuration production --base-href=/Travelling-Salesman-Visualiser/
+
+      - name: Create .nojekyll to prevent GitHub Pages ignoring files
+        run: |
+          touch dist/travelling-salesman-visualiser/.nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist/travelling-salesman-visualiser
+          publish_branch: gh-pages
