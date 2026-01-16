@@ -89,6 +89,9 @@ export class TopbarComponent implements OnInit, DoCheck {
   // Speed Control
   runSpeed:number = 10000 / 505;
 
+  // Simulated Annealing option: cooling rate between 0 and 1
+  coolingRate:number = 0.995;
+
   // -----------------------------------------------------------------------------------------------------------------
   // Class functions
 
@@ -1186,7 +1189,7 @@ export class TopbarComponent implements OnInit, DoCheck {
     let prevDistance:number = 0;            // Minimum distance between points
     let currentDistance:number;        // Current comparison distance
     let temperature:number = 10;     // Starting temperature
-    let coolingRate:number = 0.995;    // Cooling rate
+    let coolingRate:number = this.coolingRate;    // Cooling rate (from UI)
 
     this.minPathDistance = Infinity;
 
