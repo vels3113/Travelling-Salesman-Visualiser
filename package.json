@@ -6,6 +6,8 @@
     "start": "ng serve",
     "dev": "lite-server",
     "build": "ng build",
+    "predeploy": "ng build --prod --output-path=dist/travelling-salesman-visualiser",
+    "deploy": "npx angular-cli-ghpages --dir=dist/travelling-salesman-visualiser",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

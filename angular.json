@@ -128,5 +128,8 @@
       }
     }
   },
-  "defaultProject": "travelling-salesman-visualiser"
+  "defaultProject": "travelling-salesman-visualiser",
+  "cli": {
+    "analytics": false
+  }
 }
